@@ -21,9 +21,8 @@ void eqir(int, int, int);
 void eqri(int, int, int);
 void eqrr(int, int, int);
 
+// Six registers
 std::vector<int> reg = {0, 0, 0, 0, 0, 0};
-// void (*FUNCS[4]) (int a, int b, int c) = 
-//     {addr, addi, mulr, muli, banr, bani, borr, bori, setr, seti, gtir, gtri, gtrr, eqir, eqri, eqrr};
 
 // Map strings onto operations
 std::map<std::string, void (*)(int,int,int)> str_to_fp = {
@@ -44,11 +43,6 @@ std::map<std::string, void (*)(int,int,int)> str_to_fp = {
     {"eqri", eqri},
     {"eqrr", eqrr}
 };
-
-// std::vector<int> instructions;
-int instrptrval = 0;
-
-
 
 void addr(int a, int b, int c) {
     reg[c] = reg[a] + reg[b];
@@ -152,6 +146,25 @@ void call(std::string op, int a, int b, int c) {
     str_to_fp[op](a,b,c);
 }
 
+void print_registers(void) {
+    std::cout << "Registers: ";
+    for (auto i = reg.begin(); i != reg.end(); ++i)
+        std::cout << *i << ", ";
+}
+
+void print_full_program(std::vector< std::vector <std::string> > program) {
+    // print full program
+    std::cout << "\n\n\nPRINTING FULL PROGRAM\n" << std::endl;
+    std::string op;
+    int a, b, c;
+    for (int i = 0; i < program.size(); i++) {
+        op = program[i][0];
+        a = std::stoi(program[i][1]);
+        b = std::stoi(program[i][2]);
+        c = std::stoi(program[i][3]);
+        std::cout << op << " " << a << " " << b << " " << c << std::endl;
+    }
+}
 
 int main(void) {
 
@@ -165,11 +178,6 @@ int main(void) {
     // Read program into memory from text file
     while (std::getline(std::cin, line))
     {
-        // Print registers
-        // std::cout << "[";
-        // for (auto i = reg.begin(); i != reg.end(); ++i)
-        //     std::cout << *i << ", ";
-        // std::cout << "]"<< std::endl;
 
         // Instruction pointer initialisation
         if (line.rfind("#ip", 0) != std::string::npos) {
@@ -188,33 +196,13 @@ int main(void) {
         program.push_back(cmds);
     }
 
-    // print full program
-    std::cout << "\n\n\nPRINTING FULL PROGRAM\n" << std::endl;
-    for (int i = 0; i < program.size(); i++) {
-        op = program[i][0];
-        a = std::stoi(program[i][1]);
-        b = std::stoi(program[i][2]);
-        c = std::stoi(program[i][3]);
-        std::cout << op << " " << a << " " << b << " " << c << std::endl;
-    }
-
-    // Read instruction and arguments
-    // op = cmds[0];
-    // a = std::stoi(cmds[1]);
-    // b = std::stoi(cmds[2]);
-    // c = std::stoi(cmds[3]);
-    // std::cout << op << " " << a << " " << b << " " << c << std::endl;
-
-    // Increment instruction pointer
-    // reg[instrptr] += 1
-    // instrptrval = reg[instrptr]
+    print_full_program(program);
 
     // Index and value of instruction pointer
-    int ipval = reg[ip];
     int i, it = 0;
 
      // Run the program
-    while (ipval < program.size()) {
+    while (reg[ip] < program.size()) {
         i = reg[ip]; 
 
         op = program[i][0];
@@ -226,10 +214,9 @@ int main(void) {
 
         // Increment the instruction pointer
         reg[ip]++;
-        ipval = reg[ip];
-        // std::cout << op << " " << a << " " << b << " " << c << std::endl;
-        it++; 
 
+        // Progress printing
+        it++; 
         if (it % 1000000 == 0) {
             std::cout << "Iteration: " << it << std::endl;
                 for (auto i = reg.begin(); i != reg.end(); ++i)
@@ -237,23 +224,10 @@ int main(void) {
                 std::cout << std::endl;
 
         }
-
-        if (it == 9000000)
-            break;
     }
 
-
-
-    // Print registers
-    for (auto i = reg.begin(); i != reg.end(); ++i)
-        std::cout << *i << ' ';
-    std::cout << std::endl;
-
+    print_registers();
     std::cout << "Answer: " << reg[0] << std::endl;
-
-
-
-
 
     return 0;
 }
