@@ -41,7 +41,7 @@ public:
     // Getters and setters
     void set_max_iterations(int max_it);
 
-    // Printing methods
+    // Printing
     void print_registers();
     void print_full_program();
 
