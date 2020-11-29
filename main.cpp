@@ -6,6 +6,9 @@ int main(void) {
     unsigned int num_registers = 6;
     Assembler assembler(num_registers);
 
+    // Set max iterations (optional)
+    assembler.set_max_iterations(1000);
+
     // Program
     assembler.read_program();
 

@@ -38,9 +38,13 @@ public:
     void read_program();
     void run();
 
+    // Getters and setters
+    void set_max_iterations(int max_it);
+
     // Printing methods
     void print_registers();
     void print_full_program();
+
 
 protected: 
 
@@ -48,8 +52,14 @@ protected:
     unsigned int num_registers;
     int ip;
 
+    // Optional maximum iterations
+    int max_iterations = -1;
+
     // Program (line by line strings)
     std::vector< std::vector <std::string> > program; 
+
+    // Unlimited iterations special value
+    int UNLIMITED = -1;
 
     // Registers
     std::vector<int> reg;
@@ -73,6 +83,10 @@ protected:
         {"eqri", &Assembler::eqri},
         {"eqrr", &Assembler::eqrr}
     };
+
+    // Other helper functions
+    bool max_iterations_reached(int it) ;
+
 
 private:
 };

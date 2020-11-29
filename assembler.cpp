@@ -1,11 +1,32 @@
 #include "assembler.h"
 
-
+/*
+Constructor.
+*/ 
 Assembler::Assembler(unsigned int nreg) {
     num_registers = nreg;
     for (int i = 0; i < nreg; i++) {
         reg.push_back(0);
     }
+}
+
+/*
+Set a maximum number of iterations for the program.
+*/ 
+void Assembler::set_max_iterations(int max_it) {
+    if (max_it <= 0) {
+        max_iterations = UNLIMITED;
+    }
+    else {
+        max_iterations = max_it;
+    }
+}
+
+/*
+Return true if the maximum number of iterations has been reached.
+*/ 
+bool Assembler::max_iterations_reached(int it) {
+    return (max_iterations != UNLIMITED && it >= max_iterations);
 }
 
 /*
@@ -171,9 +192,14 @@ void Assembler::call(std::string op, int a, int b, int c) {
 Print the values of all registers.
 */
 void Assembler::print_registers(void) {
-    std::cout << "Registers: ";
-    for (auto i = reg.begin(); i != reg.end(); ++i)
-        std::cout << *i << ", ";
+    std::cout << "Register values: [";
+    for (auto i = reg.begin(); i != reg.end(); ++i) {
+        std::cout << *i;
+        if (i != reg.end() - 1) {
+            std::cout << ", ";
+        }
+    }
+    std::cout << "]" << std::endl;;
 }
 
 /*
@@ -181,7 +207,7 @@ Print the full program read from the input file.
 */
 void Assembler::print_full_program() {
 
-    std::cout << "\n\n------------------------------------------------" << std::endl;
+    std::cout << "\n------------------------------------------------" << std::endl;
     std::cout << "FULL PROGRAM\n" << std::endl;
     std::string op;
     int a, b, c;
@@ -192,7 +218,7 @@ void Assembler::print_full_program() {
         c = std::stoi(program[i][3]);
         std::cout << "\t" << op << " " << a << " " << b << " " << c << std::endl;
     }
-    std::cout << "------------------------------------------------\n\n\n" << std::endl;
+    std::cout << "------------------------------------------------\n" << std::endl;
 }
 
 /*
@@ -210,6 +236,7 @@ void Assembler::read_program() {
         // Instruction pointer initialisation
         if (line.rfind("#ip", 0) != std::string::npos) {
             ip = (int) line[4] - '0';
+            std::cout << "\nInstruction pointer initialised to value " << ip << "." << std::endl;
             continue;
         }
 
@@ -257,6 +284,11 @@ void Assembler::run() {
         it++; 
         if (it % 1000000 == 0) {
             std::cout << "Iteration: " << it << std::endl;
+        }
+
+        if (max_iterations_reached(it)) {
+            std::cout << "Program terminated after " << it << " iterations." << std::endl;
+            break;
         }
     }
 }
