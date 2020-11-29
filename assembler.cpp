@@ -22,7 +22,8 @@ void eqri(int, int, int);
 void eqrr(int, int, int);
 
 // Six registers
-std::vector<int> reg = {0, 0, 0, 0, 0, 0};
+unsigned int NUM_REGISTERS = 6;
+std::vector<int> reg(NUM_REGISTERS, 0);
 
 // Map strings onto operations
 std::map<std::string, void (*)(int,int,int)> str_to_fp = {
@@ -44,47 +45,81 @@ std::map<std::string, void (*)(int,int,int)> str_to_fp = {
     {"eqrr", eqrr}
 };
 
+/*
+Add the values from registers a and b. 
+*/ 
 void addr(int a, int b, int c) {
     reg[c] = reg[a] + reg[b];
 }
 
+/*
+Add the value from register a with the value b. 
+*/ 
 void addi(int a, int b, int c) {
 
     reg[c] = reg[a] + b;
 }
 
+/*
+Multiply the values from registers a and b. 
+*/ 
 void mulr(int a, int b, int c) {
     reg[c] = reg[a] * reg[b];
 }
 
+/*
+Multiply the value from register a with the value b. 
+*/ 
 void muli(int a, int b, int c) {
     reg[c] = reg[a] * b;
 }
 
+/*
+Bitwise AND of the values from registers a and b. 
+*/ 
 void banr(int a, int b, int c) {
     reg[c] = reg[a] & reg[b]; 
 }
 
+/*
+Bitwise AND of the value from register a with the value b. 
+*/ 
 void bani(int a, int b, int c) {
     reg[c] = reg[a] & b;
 }
 
+/*
+Bitwise OR of the values from registers a and b. 
+*/ 
 void borr(int a, int b, int c) {
     reg[c] = reg[a] | reg[b]; 
 }
 
+/*
+Bitwise OR of the value from register a with the value b. 
+*/ 
 void bori(int a, int b, int c) {
     reg[c] = reg[a] | b; 
 }
 
+/*
+Set the value of register c to the value of register a.
+*/
 void setr(int a, int b, int c) {
     reg[c] = reg[a]; 
 }
 
+/*
+Set the value of register c to the value a.
+*/
 void seti(int a, int b, int c) {
     reg[c] = a; 
 }
 
+/*
+Set value in register c to 0 or 1 depending if 
+the value a is greater than the value in register b.
+*/
 void gtir(int a, int b, int c) {
     if (a > reg[b]) {
         reg[c] = 1;
@@ -94,6 +129,10 @@ void gtir(int a, int b, int c) {
     }
 }
 
+/*
+Set value in register c to 0 or 1 depending if 
+the value in register a is greater than the value b.
+*/
 void gtri(int a, int b, int c) {
     if (reg[a] > b) {
         reg[c] = 1;
@@ -103,6 +142,10 @@ void gtri(int a, int b, int c) {
     }
 }
  
+/*
+Set value in register c to 0 or 1 depending if 
+the value in register a is greater than the value in register b.
+*/
 void gtrr(int a, int b, int c) {
     if (reg[a] > reg[b]) {
         reg[c] = 1;
@@ -112,6 +155,10 @@ void gtrr(int a, int b, int c) {
     }
 }
 
+/*
+Set value in register c to 0 or 1 depending if 
+the value a is equal to the value in register b.
+*/
 void eqir(int a, int b, int c) {
     if (a == reg[b]) {
         reg[c] = 1;
@@ -121,6 +168,10 @@ void eqir(int a, int b, int c) {
     }
 }
 
+/*
+Set value in register c to 0 or 1 depending if 
+the value in register a is equal to the value b.
+*/
 void eqri(int a, int b, int c) {
     if (reg[a] == b) {
         reg[c] = 1;
@@ -130,6 +181,10 @@ void eqri(int a, int b, int c) {
     }
 }
 
+/*
+Set value in register c to 0 or 1 depending if 
+the value in register a is equal to the value in register b.
+*/
 void eqrr(int a, int b, int c) {
     if (reg[a] == reg[b]) {
         reg[c] = 1;
@@ -139,21 +194,30 @@ void eqrr(int a, int b, int c) {
     }
 }
 
-
+/*
+Call the function corresponding to opcode op, with arguments
+a, b, and c.
+*/
 void call(std::string op, int a, int b, int c) {
 
     // Call the function
     str_to_fp[op](a,b,c);
 }
 
+/*
+Print the values of all registers.
+*/
 void print_registers(void) {
     std::cout << "Registers: ";
     for (auto i = reg.begin(); i != reg.end(); ++i)
         std::cout << *i << ", ";
 }
 
+/*
+Print the full program read from the input file.
+*/
 void print_full_program(std::vector< std::vector <std::string> > program) {
-    // print full program
+
     std::cout << "\n\n\nPRINTING FULL PROGRAM\n" << std::endl;
     std::string op;
     int a, b, c;
@@ -198,8 +262,11 @@ int main(void) {
 
     print_full_program(program);
 
-    // Index and value of instruction pointer
-    int i, it = 0;
+    // Temporary value of instruction pointer
+    int i;
+
+    // Iteration number
+    int it = 0;
 
      // Run the program
     while (reg[ip] < program.size()) {
