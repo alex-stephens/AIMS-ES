@@ -7,12 +7,13 @@ int main(void) {
     Assembler assembler(num_registers);
 
     // Set max iterations (optional)
-    assembler.set_max_iterations(1000);
+    assembler.set_max_iterations(10000000);
 
-    // Program
+    // Read the program from cin into memory
     assembler.read_program();
 
     // Print the program
+    assembler.print_registers();
     assembler.print_full_program();
 
     // Execute the program

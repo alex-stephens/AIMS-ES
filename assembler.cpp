@@ -6,6 +6,8 @@ Constructor.
 */ 
 Assembler::Assembler(unsigned int nreg) {
     num_registers = nreg;
+
+    // Initialise registers to zero
     for (int i = 0; i < nreg; i++) {
         reg.push_back(0);
     }
@@ -258,7 +260,7 @@ void Assembler::read_program() {
         // Instruction pointer initialisation
         if (line.rfind("#ip", 0) != std::string::npos) {
             ip = (int) line[4] - '0';
-            std::cout << "\nInstruction pointer initialised to value " << ip << "." << std::endl;
+            std::cout << "\nInstruction pointer bound to register " << ip << "." << std::endl;
             continue;
         }
 
@@ -286,7 +288,13 @@ void Assembler::run() {
     int it = 0;
 
      // Run the program
-    while (reg[ip] < program.size()) {
+    while (1) {
+
+        // End of program
+        if (reg[ip] >= program.size()) {
+            std::cout << "\nReached end of program after " << it << " iterations." << std::endl;
+            break;
+        }
         
         // Current instruction
         i = reg[ip]; 
